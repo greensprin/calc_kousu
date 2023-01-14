@@ -101,10 +101,11 @@ class CalcKousu:
 
         # 一応CSVとしても出力
         with open(OCSV_FILE, "w", encoding="utf-8") as f:
+            f.write("day or hour, date, app_name, time(sec), time(min), time(hour)\n")
             for key in self.kousu_dict:
                 id = "day" if (key.find("_") == -1) else "hour"
                 for k, v in self.kousu_dict[key].items():
-                    f.write(f"{id}, {key}, {k}, {v}\n")
+                    f.write(f"{id}, {key}, {k}, {v}, {v/60}, {v/(60*60)}\n")
 
     # 処理記述
     def run(self):
