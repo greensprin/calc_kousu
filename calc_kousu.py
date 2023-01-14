@@ -3,14 +3,11 @@
 import os
 import time
 import json
-import re
 import datetime
 import keyboard
 import win32gui
 import win32process
 import wmi
-import pandas as pd
-from pandas import json_normalize
 
 DEBUG    = 1
 WAITTIME = 1 # seconds
@@ -32,14 +29,10 @@ class CalcKousu:
             with open(OJSON_FILE, "r") as f:
                 self.kousu_dict = json.load(f)
 
-        self.keyword_dict = self.readJsonc("keyword.jsonc")
-
-    # jsonファイルにコメントを書いても読み込めるようにする関数
-    def readJsonc(self, jsonc_path):
-        with open(jsonc_path, "r", encoding="utf-8") as f:
-            text = f.read()
-        re_text = re.sub(r"/\*[\s\S]*?\*/|//\s+.*", "", text)
-        return json.loads(re_text)
+        self.keyword_dict = {}
+        if (os.path.exists("keyword.json")):
+            with open("keyword.json", "r", encoding="utf-8") as f:
+                self.keyword_dict = json.loads(f.read())
 
     # アクティブウィンドウ名とアプリ名を取得
     def get_active_window_and_app_name(self):
@@ -103,28 +96,33 @@ class CalcKousu:
         # 一応CSVとしても出力
         with open(OCSV_FILE, "w", encoding="utf-8") as f:
             for key in self.kousu_dict:
+                id = "day" if (key.find("_") == -1) else "hour"
                 for k, v in self.kousu_dict[key].items():
-                    f.write(f"{key}, {k}, {v}\n")
+                    f.write(f"{id}, {key}, {k}, {v}\n")
 
     # 処理記述
     def run(self):
-        while(1):
-            if keyboard.is_pressed("ctrl+shift+alt"):
-                self.update_dict()
-                self.SaveResult()
-                break
+        try:
+            while True:
+                if keyboard.is_pressed("ctrl+shift+alt"):
+                    self.update_dict()
+                    self.SaveResult()
+                    break
 
-            time.sleep(WAITTIME)
+                time.sleep(WAITTIME)
 
-            self.get_active_window_and_app_name()
+                self.get_active_window_and_app_name()
 
-            if (self.pre_app_name == ""):
-                self.update_pre_state()
-            elif (self.pre_app_name != self.app_name):
-                self.update_dict()
-                self.update_pre_state()
-            else:
-                pass
+                if (self.pre_app_name == ""):
+                    self.update_pre_state()
+                elif (self.pre_app_name != self.app_name):
+                    self.update_dict()
+                    self.update_pre_state()
+                else:
+                    pass
+        finally:
+            self.update_dict()
+            self.SaveResult()
 
 def main():
     calc_kousu = CalcKousu()
