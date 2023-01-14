@@ -60,6 +60,7 @@ class CalcKousu:
         for key, value in self.keyword_dict.items():
             if (self.active_window_name.find(key) != -1):
                 self.app_name = value 
+                break
 
     # 以前の状態を更新する
     def update_pre_state(self):
