@@ -12,8 +12,9 @@ import wmi
 DEBUG    = 1
 WAITTIME = 1 # seconds
 
-OJSON_FILE = "output/output.json"
-OCSV_FILE = "output/output.csv"
+ODIR = "output"
+OJSON_FILE = f"{ODIR}/output.json"
+OCSV_FILE  = f"{ODIR}/output.csv"
 
 class CalcKousu:
     def __init__(self):
@@ -90,6 +91,10 @@ class CalcKousu:
 
     # 結果出力
     def SaveResult(self):
+        # 出力フォルダがない場合は作成する
+        if not(os.path.exists(ODIR)):
+            os.makedirs(ODIR)
+
         # jsonで出力
         with open(OJSON_FILE, "w", encoding="utf-8") as f:
             json.dump(self.kousu_dict, f, indent=2)
