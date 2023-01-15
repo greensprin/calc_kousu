@@ -7,6 +7,7 @@ import datetime
 import keyboard
 import win32gui
 import win32process
+import win32api
 import wmi
 
 DEBUG    = 1
@@ -34,6 +35,8 @@ class CalcKousu:
         if (os.path.exists("keyword.json")):
             with open("keyword.json", "r", encoding="utf-8") as f:
                 self.keyword_dict = json.loads(f.read())
+
+        win32api.SetConsoleCtrlHandler(self.on_exit_with_cross_button, True)
 
     # アクティブウィンドウ名とアプリ名を取得
     def get_active_window_and_app_name(self):
@@ -130,6 +133,11 @@ class CalcKousu:
         finally:
             self.update_dict()
             self.SaveResult()
+
+    # ×ボタンを押して閉じられた時にデータをセーブして終了する
+    def on_exit_with_cross_button(self, signal_type):
+        self.update_dict()
+        self.SaveResult()
 
 def main():
     calc_kousu = CalcKousu()
