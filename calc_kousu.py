@@ -36,6 +36,15 @@ class CalcKousu:
             with open("keyword.json", "r", encoding="utf-8") as f:
                 self.keyword_dict = json.loads(f.read())
 
+        self.terminate_type = [
+            "PRESS_CTRL+C",
+            "BREAK_EVENT",
+            "PRESS_CROSS_BUTTON",
+            "UNKNOWN_TYPE_3",
+            "UNKNOWN_TYPE_4",
+            "LOFOFF_EVENT",
+            "SHUTDOWN_EVENT"
+        ]
         win32api.SetConsoleCtrlHandler(self.on_exit_with_cross_button, True)
 
     # アクティブウィンドウ名とアプリ名を取得
@@ -112,30 +121,27 @@ class CalcKousu:
 
     # 処理記述
     def run(self):
-        try:
-            while True:
-                if keyboard.is_pressed("ctrl+shift+alt"):
-                    self.update_dict()
-                    self.SaveResult()
-                    break
+        while True:
+            if keyboard.is_pressed("ctrl+shift+alt"):
+                self.update_dict()
+                self.SaveResult()
+                break
 
-                time.sleep(WAITTIME)
+            time.sleep(WAITTIME)
 
-                self.get_active_window_and_app_name()
+            self.get_active_window_and_app_name()
 
-                if (self.pre_app_name == ""):
-                    self.update_pre_state()
-                elif (self.pre_app_name != self.app_name):
-                    self.update_dict()
-                    self.update_pre_state()
-                else:
-                    pass
-        finally:
-            self.update_dict()
-            self.SaveResult()
+            if (self.pre_app_name == ""):
+                self.update_pre_state()
+            elif (self.pre_app_name != self.app_name):
+                self.update_dict()
+                self.update_pre_state()
+            else:
+                pass
 
-    # ×ボタンを押して閉じられた時にデータをセーブして終了する
+    # 何かしらで強制終了されたときに実行する関数
     def on_exit_with_cross_button(self, signal_type):
+        print(self.terminate_type[signal_type])
         self.update_dict()
         self.SaveResult()
 
