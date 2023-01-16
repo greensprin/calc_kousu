@@ -1,6 +1,7 @@
 # coding: UTF-8
 
 import os
+import re
 import time
 import json
 import datetime
@@ -69,10 +70,15 @@ class CalcKousu:
 
     # 指定のワードがアクティブウィンドウ名に入ってたら、アプリ名を自分指定の名前に変更する
     # 各種指定のワードは「keyword.jsonc」に記載する
+    # 正規表現にも対応
     def update_app_name(self):
         for key, value in self.keyword_dict.items():
             if (self.active_window_name.find(key) != -1):
-                self.app_name = value 
+                re_search = re.search(value, self.active_window_name)
+                if (re_search != None):
+                    self.app_name = re_search.group()
+                else:
+                    self.app_name = value 
                 break
 
     # 以前の状態を更新する
