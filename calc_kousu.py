@@ -84,6 +84,9 @@ class CalcKousu:
                 else:                   # 工数名は自分で決めた文字列で設定する場合
                     self.app_name = value 
                 break
+            elif (self.app_name == key): # 特定のアプリを特定の工数でつけたいとき(アプリ名わかりづらいので変更したいときとか)
+                self.app_name = value
+                break
             else:
                 pass
 

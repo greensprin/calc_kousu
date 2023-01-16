@@ -1,5 +1,7 @@
 {
     "[0-9]{,2}:[0-9]{,2}": "WorkOut",
+    "msedge.exe": "Microsoft Edge",
+    "Code.exe": "Visual Studio Code",
     ".xls": "Excel",
     ".ppt": "PowerPoint",
     "YouTube": "YouTube"
