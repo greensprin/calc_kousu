@@ -73,13 +73,19 @@ class CalcKousu:
     # 正規表現にも対応
     def update_app_name(self):
         for key, value in self.keyword_dict.items():
-            if (self.active_window_name.find(key) != -1):
+            key_search = re.search(key, self.active_window_name)
+            if (key_search != None):    # 正規表現で文字列を検索し、matchしたら一定の工数を付けたい場合
+                self.app_name = value
+                break
+            elif (self.active_window_name.find(key) != -1): # keyを含む場合に､､､
                 re_search = re.search(value, self.active_window_name)
-                if (re_search != None):
+                if (re_search != None): # 工数名は文字列によって柔軟い変更したい場合
                     self.app_name = re_search.group()
-                else:
+                else:                   # 工数名は自分で決めた文字列で設定する場合
                     self.app_name = value 
                 break
+            else:
+                pass
 
     # 以前の状態を更新する
     def update_pre_state(self):
